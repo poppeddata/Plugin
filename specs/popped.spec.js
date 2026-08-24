@@ -84,7 +84,7 @@ test( 'inserts Year Navigator through the editor and persists its key UX setting
 	} );
 
 	await page.getByRole( 'button', { name: 'Save draft' } ).click();
-	await expect( page.getByText( 'Saved' ) ).toBeVisible();
+	await expect( page.getByRole( 'button', { name: 'Saved', exact: true } ) ).toBeVisible();
 	await page.reload();
 
 	await expect.poll( editor.getBlocks ).toMatchObject( [

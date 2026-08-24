@@ -282,6 +282,11 @@ final class Popped_Components {
 		$hero        = $posts[0];
 		$more        = max( 0, $total - 1 );
 		$archive_url = self::archive_url( array( '_popped_month' => $month, '_popped_day' => $day ) );
+		$more_label  = '';
+		if ( $more > 0 ) {
+			/* translators: %d: Number of additional events for the selected day. */
+			$more_label = sprintf( _n( '%d more event on this day', '%d more events on this day', $more, 'popped' ), $more );
+		}
 		$image       = '';
 		if ( ! empty( $attributes['showImage'] ) ) {
 			$image = get_the_post_thumbnail( $hero, 'full', array( 'class' => 'popped-otd__image', 'loading' => 'eager', 'fetchpriority' => 'high' ) );
@@ -296,7 +301,7 @@ final class Popped_Components {
 			<div class="popped-wrap">
 				<header class="popped-section-head popped-otd__head">
 					<div><p class="popped-kicker"><?php echo esc_html( strtoupper( $label ) ); ?></p><?php if ( '' !== $title ) : ?><<?php echo esc_attr( $section_tag ); ?> id="<?php echo esc_attr( $heading_id ); ?>"><?php echo esc_html( $title ); ?></<?php echo esc_attr( $section_tag ); ?>><?php endif; ?></div>
-					<?php if ( $more > 0 ) : ?><a class="popped-text-link" href="<?php echo esc_url( $archive_url ); ?>"><?php echo esc_html( sprintf( _n( '%d more event on this day', '%d more events on this day', $more, 'popped' ), $more ) ); ?> <span aria-hidden="true">→</span></a><?php endif; ?>
+					<?php if ( $more > 0 ) : ?><a class="popped-text-link" href="<?php echo esc_url( $archive_url ); ?>"><?php echo esc_html( $more_label ); ?> <span aria-hidden="true">→</span></a><?php endif; ?>
 				</header>
 				<article class="popped-otd__feature">
 					<?php if ( $image ) : ?><a class="popped-otd__media" href="<?php echo esc_url( get_permalink( $hero ) ); ?>" tabindex="-1" aria-hidden="true"><?php echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a><?php endif; ?>
@@ -369,6 +374,8 @@ final class Popped_Components {
 		$heading_id  = self::unique_id( 'popped-timeline-title' );
 		$section_tag = self::heading_tag( isset( $attributes['sectionTitleLevel'] ) ? $attributes['sectionTitleLevel'] : 2, 2 );
 		$result_count = $query->found_posts ? (int) $query->found_posts : (int) $query->post_count;
+		/* translators: %s: Number of matching timeline events. */
+		$result_count_label = sprintf( _n( '%s event', '%s events', $result_count, 'popped' ), number_format_i18n( $result_count ) );
 
 		ob_start();
 		?>
@@ -384,7 +391,7 @@ final class Popped_Components {
 						$link_text = ! empty( $attributes['linkText'] ) ? $attributes['linkText'] : __( 'See full timeline', 'popped' );
 					?>
 						<div class="popped-section-head__actions">
-							<?php if ( $show_result_count ) : ?><p class="popped-result-count"><?php echo esc_html( sprintf( _n( '%s event', '%s events', $result_count, 'popped' ), number_format_i18n( $result_count ) ) ); ?></p><?php endif; ?>
+							<?php if ( $show_result_count ) : ?><p class="popped-result-count"><?php echo esc_html( $result_count_label ); ?></p><?php endif; ?>
 							<?php if ( $show_view_link ) : ?><a class="popped-text-link" href="<?php echo esc_url( $link_url ); ?>"><?php echo esc_html( $link_text ); ?><span aria-hidden="true">→</span></a><?php endif; ?>
 						</div>
 					<?php endif; ?>
@@ -441,7 +448,9 @@ final class Popped_Components {
 		foreach ( $years as $year ) {
 			$count = isset( $counts[ $year ] ) ? (int) $counts[ $year ] : 0;
 			$base = ! empty( $attributes['destination'] ) ? $attributes['destination'] : self::archive_url();
-			$out .= '<a href="' . esc_url( add_query_arg( '_popped_year', $year, $base ) ) . '"><span>' . esc_html( $year ) . '</span>' . ( ! empty( $attributes['showCounts'] ) ? '<small>' . esc_html( sprintf( _n( '%s story', '%s stories', $count, 'popped' ), number_format_i18n( $count ) ) ) . '</small>' : '' ) . '</a>';
+			/* translators: %s: Number of stories published in the year. */
+			$count_label = sprintf( _n( '%s story', '%s stories', $count, 'popped' ), number_format_i18n( $count ) );
+			$out .= '<a href="' . esc_url( add_query_arg( '_popped_year', $year, $base ) ) . '"><span>' . esc_html( $year ) . '</span>' . ( ! empty( $attributes['showCounts'] ) ? '<small>' . esc_html( $count_label ) . '</small>' : '' ) . '</a>';
 		}
 		return $out . '</nav></div></section>';
 	}
@@ -598,8 +607,10 @@ final class Popped_Components {
 		if ( ! $posts ) { return ''; }
 		$terms = get_the_terms( $post_id, 'post_tag' );
 		$context = $terms && ! is_wp_error( $terms ) ? $terms[0]->name : __( 'the archive', 'popped' );
+		/* translators: %s: Archive section, such as a tag name. */
+		$context_label = sprintf( __( 'More from %s', 'popped' ), $context );
 		$out = '<section class="popped-discovery popped-continue"><p class="popped-kicker">' . esc_html__( 'Continue the Story', 'popped' ) . '</p><div class="popped-continue-list">';
-		foreach ( $posts as $post ) { if ( ! $post || 'publish' !== $post->post_status || ! empty( $post->post_password ) ) { continue; } $out .= '<a href="' . esc_url( get_permalink( $post ) ) . '"><span>' . esc_html( sprintf( __( 'More from %s', 'popped' ), $context ) ) . '</span><strong>' . esc_html( get_the_title( $post ) ) . '</strong><b aria-hidden="true">→</b></a>'; }
+		foreach ( $posts as $post ) { if ( ! $post || 'publish' !== $post->post_status || ! empty( $post->post_password ) ) { continue; } $out .= '<a href="' . esc_url( get_permalink( $post ) ) . '"><span>' . esc_html( $context_label ) . '</span><strong>' . esc_html( get_the_title( $post ) ) . '</strong><b aria-hidden="true">→</b></a>'; }
 		return $out . '</div></section>';
 	}
 
@@ -655,11 +666,23 @@ final class Popped_Components {
 		$search_id = self::unique_id( 'popped-search-input' );
 		$category_id = self::unique_id( 'popped-search-category' );
 		$tag_id = self::unique_id( 'popped-search-tag' );
+		if ( $query_text ) {
+			/* translators: %s: The visitor's search query. */
+			$search_heading = sprintf( __( 'Results for “%s”', 'popped' ), $query_text );
+		} else {
+			$search_heading = __( 'What are you looking for?', 'popped' );
+		}
+		$search_result_count_label = '';
+		if ( is_search() ) {
+			global $wp_query;
+			/* translators: %s: Number of search results. */
+			$search_result_count_label = sprintf( _n( '%s result', '%s results', $wp_query->found_posts, 'popped' ), number_format_i18n( $wp_query->found_posts ) );
+		}
 		ob_start();
 		?>
 		<section class="popped-section popped-search-page"><div class="popped-wrap">
 			<p class="popped-kicker"><?php esc_html_e( 'Search the archive', 'popped' ); ?></p>
-			<h1><?php echo $query_text ? esc_html( sprintf( __( 'Results for “%s”', 'popped' ), $query_text ) ) : esc_html__( 'What are you looking for?', 'popped' ); ?></h1>
+			<h1><?php echo esc_html( $search_heading ); ?></h1>
 			<form class="popped-search-form" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 				<input type="hidden" name="_popped_search" value="1">
 				<label class="screen-reader-text" for="<?php echo esc_attr( $search_id ); ?>"><?php esc_html_e( 'Search stories', 'popped' ); ?></label>
@@ -668,8 +691,8 @@ final class Popped_Components {
 				<?php if ( $tags && ! is_wp_error( $tags ) ) : ?><label class="screen-reader-text" for="<?php echo esc_attr( $tag_id ); ?>"><?php esc_html_e( 'Tag', 'popped' ); ?></label><select id="<?php echo esc_attr( $tag_id ); ?>" name="_popped_search_tag"><option value=""><?php esc_html_e( 'All tags', 'popped' ); ?></option><?php foreach ( $tags as $term ) : ?><option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $tag, $term->slug ); ?>><?php echo esc_html( $term->name ); ?></option><?php endforeach; ?></select><?php endif; ?>
 				<button type="submit"><?php esc_html_e( 'Search', 'popped' ); ?></button>
 			</form>
-			<?php if ( is_search() ) : global $wp_query; ?>
-				<?php if ( ! empty( $attributes['showResultCount'] ) ) : ?><p class="popped-result-count"><?php echo esc_html( sprintf( _n( '%s result', '%s results', $wp_query->found_posts, 'popped' ), number_format_i18n( $wp_query->found_posts ) ) ); ?></p><?php endif; ?>
+			<?php if ( is_search() ) : ?>
+				<?php if ( ! empty( $attributes['showResultCount'] ) ) : ?><p class="popped-result-count"><?php echo esc_html( $search_result_count_label ); ?></p><?php endif; ?>
 				<div class="popped-search-results <?php echo 'list' === $display ? 'popped-story-list' : 'popped-story-grid'; ?>">
 				<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); echo self::post_card( get_post(), 'list' === $display ? 'list' : 'grid', $attributes ); endwhile; else : echo self::empty_state( __( 'No stories found.', 'popped' ), __( 'Try a band, person, place or year.', 'popped' ) ); endif; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
@@ -708,12 +731,14 @@ final class Popped_Components {
 			return '<span>' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
 		}
 
+		/* translators: %s: Site name. */
+		$home_alt = sprintf( __( '%s home', 'popped' ), get_bloginfo( 'name' ) );
 		$logo = wp_get_attachment_image(
 			$logo_id,
 			'medium',
 			false,
 			array(
-				'alt'      => sprintf( __( '%s home', 'popped' ), get_bloginfo( 'name' ) ),
+				'alt'      => $home_alt,
 				'class'    => $image_class,
 				'decoding' => 'async',
 				'loading'  => 'eager',

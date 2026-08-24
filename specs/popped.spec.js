@@ -64,7 +64,7 @@ test( 'inserts Year Navigator through the editor and persists its key UX setting
 	const library = page.getByRole( 'region', { name: 'Block Library' } );
 	const search = library.getByRole( 'searchbox' );
 	await search.fill( 'Year Navigator' );
-	await library.getByRole( 'option', { name: 'Year Navigator', exact: true } ).click();
+	await library.getByText( 'Year Navigator', { exact: true } ).click();
 
 	await expect.poll( editor.getBlocks ).toMatchObject( [
 		{ name: 'popped/year-navigator' },
@@ -104,11 +104,14 @@ test( 'renders long editorial content without page-level horizontal overflow', a
 	page,
 	requestUtils,
 } ) => {
-	await requestUtils.createPost( {
-		status: 'publish',
-		title: 'Popped E2E source story',
-		content: '<!-- wp:paragraph --><p>Source story.</p><!-- /wp:paragraph -->',
-	} );
+	for ( let year = 2015; year <= 2026; year += 1 ) {
+		await requestUtils.createPost( {
+			status: 'publish',
+			title: `Popped E2E source story ${ year }`,
+			date: `${ year }-06-15T12:00:00`,
+			content: '<!-- wp:paragraph --><p>Source story.</p><!-- /wp:paragraph -->',
+		} );
+	}
 
 	const longTitle =
 		'Explore a very long historical archive heading that must remain contained even in narrow layouts';
@@ -149,7 +152,8 @@ test( 'delivers design tokens with Popped blocks while leaving the theme shell a
 
 	await expect( page.locator( '.popped-block--year-navigator' ) ).toBeVisible();
 	const inlineTokens = page.locator( 'style#popped-inline-css' );
-	await expect( inlineTokens ).toContainText( '--popped-background' );
+	await expect.poll( () => inlineTokens.evaluate( ( style ) => style.textContent ) )
+		.toContain( '--popped-background' );
 	await expect( page.locator( '.popped-site-header, .popped-site-footer' ) ).toHaveCount( 0 );
 } );
 

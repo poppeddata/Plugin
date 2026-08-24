@@ -103,22 +103,16 @@ final class Popped_Setup {
 		}
 
 		if ( ! $page ) {
-			$role_pages = get_posts(
-				array(
-					'post_type'      => 'page',
-					'post_status'    => array( 'publish', 'draft', 'private', 'future' ),
-					'posts_per_page' => 1,
-					'meta_key'       => '_popped_page_role',
-					'meta_value'     => $role,
-				)
-			); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			$page = $role_pages ? $role_pages[0] : null;
-		}
-
-		if ( ! $page ) {
-			$slug_page = get_page_by_path( $definition['slug'] );
-			if ( $slug_page && 'page' === $slug_page->post_type && 'trash' !== $slug_page->post_status && has_block( $definition['block'], $slug_page->post_content ) ) {
-				$page = $slug_page;
+			foreach ( array( $definition['slug'], $definition['fallback'] ) as $managed_slug ) {
+				$slug_page = get_page_by_path( $managed_slug, OBJECT, 'page' );
+				if ( ! $slug_page || 'trash' === $slug_page->post_status ) {
+					continue;
+				}
+				$managed_role = get_post_meta( $slug_page->ID, '_popped_page_role', true );
+				if ( $role === $managed_role || has_block( $definition['block'], $slug_page->post_content ) ) {
+					$page = $slug_page;
+					break;
+				}
 			}
 		}
 

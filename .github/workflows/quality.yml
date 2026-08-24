@@ -17,7 +17,7 @@ jobs:
         php: ['7.4', '8.3', '8.4']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -26,7 +26,7 @@ jobs:
           coverage: none
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
 
@@ -48,7 +48,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
-
     strategy:
       fail-fast: false
       matrix:
@@ -61,7 +60,7 @@ jobs:
             php: '8.4'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up PHP and WP-CLI
         uses: shivammathur/setup-php@v2
@@ -93,12 +92,11 @@ jobs:
 
   browser-e2e:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
 
@@ -113,13 +111,13 @@ jobs:
 
   plugin-check:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Run WordPress Plugin Check
         uses: wordpress/plugin-check-action@v1
         with:
           build-dir: './'
+          slug: 'popped'
           wp-version: '7.1'
           include-experimental: 'false'

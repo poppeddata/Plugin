@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -426,12 +427,35 @@ def check_release_engineering() -> None:
     for job in ("release-contract:", "wordpress-smoke:", "browser-e2e:", "plugin-check:"):
         if job not in workflow:
             fail(f"CI workflow is missing {job}")
+    if "slug: 'popped'" not in workflow:
+        fail("Plugin Check must receive the canonical popped slug.")
+    if "actions/checkout@v4" in workflow or "actions/setup-node@v4" in workflow:
+        fail("CI still uses deprecated Node 20 GitHub Actions.")
     smoke = read("tools/wordpress_smoke.php")
     if "native_templates()" in smoke:
         fail("Smoke suite calls the removed native_templates() API.")
     if re.search(r"Expected Popped 2\.\d", smoke):
         fail("Smoke suite contains a hard-coded patch-version assertion.")
-    print("PASS automated smoke/E2E/Plugin Check CI + exact direct dependency pins")
+    if "function popped_smoke_run()" not in smoke:
+        fail("Smoke-test execution must be wrapped so test variables are not plugin globals.")
+
+    setup = read("includes/class-popped-setup.php")
+    if "'meta_key'       => '_popped_page_role'" in setup or "'meta_value'     => $role" in setup:
+        fail("Setup still uses a slow post-meta recovery query.")
+
+    admin = read("includes/class-popped-admin.php")
+    if "array_map( 'absint', (array) wp_unslash( $_POST['popped_related_posts'] ) )" not in admin:
+        fail("Related-story POST IDs are not explicitly sanitized at the request boundary.")
+    if "array_map( 'absint', (array) wp_unslash( $_POST['popped_related_exclude'] ) )" not in admin:
+        fail("Excluded-story POST IDs are not explicitly sanitized at the request boundary.")
+
+    components = read("includes/class-popped-components.php")
+    if "sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) )" not in components:
+        fail("REQUEST_URI is not sanitized before URL parsing.")
+    if "phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery" not in components:
+        fail("The intentional cached year-count aggregate query lacks a narrow PHPCS justification.")
+
+    print("PASS automated smoke/E2E/Plugin Check CI + warning-free certification contracts")
 
 
 def check_security_contract() -> None:
@@ -457,13 +481,17 @@ def check_security_contract() -> None:
 def check_package_hygiene() -> None:
     forbidden_dirs = {".git", "node_modules", "__pycache__", ".idea", ".vscode"}
     forbidden_files = {".DS_Store", "Thumbs.db"}
+    allow_ci_git_metadata = os.environ.get("GITHUB_ACTIONS") == "true"
     for path in ROOT.rglob("*"):
-        if any(part in forbidden_dirs for part in path.relative_to(ROOT).parts):
-            fail(f"Forbidden development directory in package: {path.relative_to(ROOT)}")
+        relative = path.relative_to(ROOT)
+        if allow_ci_git_metadata and relative.parts and relative.parts[0] == ".git":
+            continue
+        if any(part in forbidden_dirs for part in relative.parts):
+            fail(f"Forbidden development directory in package: {relative}")
         if path.name in forbidden_files:
-            fail(f"Forbidden file in package: {path.relative_to(ROOT)}")
+            fail(f"Forbidden file in package: {relative}")
         if path.is_file() and path.suffix.lower() in {".zip", ".tar", ".gz"}:
-            fail(f"Nested archive in package: {path.relative_to(ROOT)}")
+            fail(f"Nested archive in package: {relative}")
     print("PASS package hygiene")
 
 

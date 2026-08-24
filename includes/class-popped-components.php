@@ -1115,7 +1115,8 @@ final class Popped_Components {
 		}
 
 		global $wpdb;
-		$rows = $wpdb->get_results(
+		// A single cached aggregate is materially cheaper than loading every post just to count years.
+		$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$wpdb->prepare(
 				"SELECT YEAR(post_date) AS story_year, COUNT(ID) AS story_count
 				FROM {$wpdb->posts}
@@ -1211,7 +1212,7 @@ final class Popped_Components {
 			return home_url( '/' );
 		}
 
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
 		$request_path = wp_parse_url( $request_uri, PHP_URL_PATH );
 		$request_query = wp_parse_url( $request_uri, PHP_URL_QUERY );
 

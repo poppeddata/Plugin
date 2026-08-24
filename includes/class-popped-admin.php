@@ -290,9 +290,21 @@ final class Popped_Admin {
 		if ( ! isset( $_POST['popped_discovery_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['popped_discovery_nonce'] ) ), 'popped_discovery_' . $post_id ) ) { return; }
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return; }
 		if ( ! current_user_can( 'edit_post', $post_id ) ) { return; }
-		$continue_ids = self::readable_post_ids( isset( $_POST['popped_continue_post'] ) ? array( absint( $_POST['popped_continue_post'] ) ) : array() );
-		$related_ids  = self::readable_post_ids( Popped_Settings::id_list( isset( $_POST['popped_related_posts'] ) ? wp_unslash( $_POST['popped_related_posts'] ) : array() ) );
-		$exclude_ids  = self::readable_post_ids( Popped_Settings::id_list( isset( $_POST['popped_related_exclude'] ) ? wp_unslash( $_POST['popped_related_exclude'] ) : array() ) );
+		$continue_ids = self::readable_post_ids(
+			isset( $_POST['popped_continue_post'] )
+				? array( absint( wp_unslash( $_POST['popped_continue_post'] ) ) )
+				: array()
+		);
+		$related_ids = self::readable_post_ids(
+			isset( $_POST['popped_related_posts'] )
+				? array_map( 'absint', (array) wp_unslash( $_POST['popped_related_posts'] ) )
+				: array()
+		);
+		$exclude_ids = self::readable_post_ids(
+			isset( $_POST['popped_related_exclude'] )
+				? array_map( 'absint', (array) wp_unslash( $_POST['popped_related_exclude'] ) )
+				: array()
+		);
 		update_post_meta( $post_id, '_popped_continue_post', $continue_ids ? $continue_ids[0] : 0 );
 		update_post_meta( $post_id, '_popped_related_posts', $related_ids );
 		update_post_meta( $post_id, '_popped_related_exclude', $exclude_ids );

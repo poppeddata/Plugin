@@ -1,0 +1,401 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "popped/horizontal-timeline",
+  "version": "2.1.0",
+  "title": "Horizontal Timeline",
+  "category": "popped",
+  "icon": "slides",
+  "description": "Show a chronological, swipeable rail of selected stories.",
+  "textdomain": "popped",
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "order": {
+      "type": "string"
+    },
+    "layout": {
+      "type": "string"
+    },
+    "displayLayout": {
+      "type": "string"
+    },
+    "composition": {
+      "type": "string"
+    },
+    "collection": {
+      "type": "string"
+    },
+    "selectionMode": {
+      "type": "string"
+    },
+    "density": {
+      "type": "string"
+    },
+    "contentAlign": {
+      "type": "string"
+    },
+    "sectionTitleAlign": {
+      "type": "string"
+    },
+    "utilityAlign": {
+      "type": "string"
+    },
+    "headingFontFamily": {
+      "type": "string"
+    },
+    "excerptFontFamily": {
+      "type": "string"
+    },
+    "metadataFontFamily": {
+      "type": "string"
+    },
+    "sectionTitleFontFamily": {
+      "type": "string"
+    },
+    "headingColor": {
+      "type": "string"
+    },
+    "excerptColor": {
+      "type": "string"
+    },
+    "metadataColor": {
+      "type": "string"
+    },
+    "sectionTitleColor": {
+      "type": "string"
+    },
+    "utilityColor": {
+      "type": "string"
+    },
+    "utilitySecondaryColor": {
+      "type": "string"
+    },
+    "utilityAccentColor": {
+      "type": "string"
+    },
+    "imageRatio": {
+      "type": "string"
+    },
+    "imageFit": {
+      "type": "string"
+    },
+    "imagePosition": {
+      "type": "string"
+    },
+    "featureSize": {
+      "type": "string"
+    },
+    "radius": {
+      "type": "string"
+    },
+    "headingSize": {
+      "type": "string"
+    },
+    "headingWeight": {
+      "type": "string"
+    },
+    "headingLineHeight": {
+      "type": "string"
+    },
+    "excerptSize": {
+      "type": "string"
+    },
+    "cardSurface": {
+      "type": "string"
+    },
+    "cardBorder": {
+      "type": "string"
+    },
+    "cardRadius": {
+      "type": "string"
+    },
+    "metadataSize": {
+      "type": "string"
+    },
+    "metadataTone": {
+      "type": "string"
+    },
+    "metadataCase": {
+      "type": "string"
+    },
+    "metadataWeight": {
+      "type": "string"
+    },
+    "metadataSeparator": {
+      "type": "string"
+    },
+    "cardWidth": {
+      "type": "string"
+    },
+    "linkText": {
+      "type": "string"
+    },
+    "linkUrl": {
+      "type": "string"
+    },
+    "fallbackText": {
+      "type": "string"
+    },
+    "tickerLabel": {
+      "type": "string"
+    },
+    "tickerSpeed": {
+      "type": "string"
+    },
+    "tickerDirection": {
+      "type": "string"
+    },
+    "tickerSeparator": {
+      "type": "string"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "relevance": {
+      "type": "string"
+    },
+    "yearOrder": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number"
+    },
+    "columns": {
+      "type": "number"
+    },
+    "mobileColumns": {
+      "type": "number"
+    },
+    "headingFontSize": {
+      "type": "number"
+    },
+    "excerptFontSizeExact": {
+      "type": "number"
+    },
+    "metadataFontSizeExact": {
+      "type": "number"
+    },
+    "sectionTitleFontSize": {
+      "type": "number"
+    },
+    "utilityFontSize": {
+      "type": "number"
+    },
+    "utilitySecondaryFontSize": {
+      "type": "number"
+    },
+    "mobileUtilityFontSize": {
+      "type": "number"
+    },
+    "mobileUtilitySecondaryFontSize": {
+      "type": "number"
+    },
+    "utilityGap": {
+      "type": "number"
+    },
+    "mobileHeadingFontSize": {
+      "type": "number"
+    },
+    "mobileExcerptFontSize": {
+      "type": "number"
+    },
+    "mobileMetadataFontSize": {
+      "type": "number"
+    },
+    "mobileSectionTitleFontSize": {
+      "type": "number"
+    },
+    "itemGap": {
+      "type": "number"
+    },
+    "cardGap": {
+      "type": "number"
+    },
+    "contentGap": {
+      "type": "number"
+    },
+    "cardPadding": {
+      "type": "number"
+    },
+    "excerptLength": {
+      "type": "number"
+    },
+    "startYear": {
+      "type": "number"
+    },
+    "endYear": {
+      "type": "number"
+    },
+    "maxYears": {
+      "type": "number"
+    },
+    "postId": {
+      "type": "number"
+    },
+    "month": {
+      "type": "number"
+    },
+    "day": {
+      "type": "number"
+    },
+    "headingLevel": {
+      "type": "number"
+    },
+    "sectionTitleLevel": {
+      "type": "number"
+    },
+    "showImage": {
+      "type": "boolean"
+    },
+    "showCollectionImage": {
+      "type": "boolean"
+    },
+    "showDate": {
+      "type": "boolean"
+    },
+    "showCategory": {
+      "type": "boolean"
+    },
+    "showTags": {
+      "type": "boolean"
+    },
+    "showExcerpt": {
+      "type": "boolean"
+    },
+    "showAuthor": {
+      "type": "boolean"
+    },
+    "paginate": {
+      "type": "boolean"
+    },
+    "groupByYear": {
+      "type": "boolean"
+    },
+    "showNavigation": {
+      "type": "boolean"
+    },
+    "showViewLink": {
+      "type": "boolean"
+    },
+    "useToday": {
+      "type": "boolean"
+    },
+    "tickerPause": {
+      "type": "boolean"
+    },
+    "filterYear": {
+      "type": "boolean"
+    },
+    "filterCategory": {
+      "type": "boolean"
+    },
+    "filterTag": {
+      "type": "boolean"
+    },
+    "filterSearch": {
+      "type": "boolean"
+    },
+    "showCounts": {
+      "type": "boolean"
+    },
+    "showResultCount": {
+      "type": "boolean"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excludeCategories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excludeTags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "posts": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "excludePosts": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontStyle": true,
+      "__experimentalFontWeight": true,
+      "__experimentalLetterSpacing": true,
+      "textTransform": true
+    },
+    "border": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    }
+  },
+  "editorScript": "popped-blocks",
+  "editorStyle": "popped-editor",
+  "style": "popped",
+  "viewScript": "popped",
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true
+    },
+    {
+      "name": "filmstrip",
+      "label": "Filmstrip",
+      "isDefault": false
+    },
+    {
+      "name": "minimal",
+      "label": "Minimal",
+      "isDefault": false
+    }
+  ]
+}
